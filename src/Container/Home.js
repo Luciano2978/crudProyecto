@@ -1,8 +1,8 @@
 import "../Assets/css/Home.css";
 import Contexto from "../Context/Contexto";
-import { useState,useContext} from "react";
+import { useState,useContext,useEffect} from "react";
 import { useNavigate } from "react-router-dom";
-
+import {onSnapshot} from "firebase/firestore";
 
 
 
@@ -14,6 +14,7 @@ export default function Home(){
     const [ email, setEmail] = useState("");
     const [ domicilio, setDomicilio] = useState("");
     const [ celular, setCelular] = useState("");
+    const [ identificador, setIdentificador] = useState([]);
     const navigate = useNavigate();
 
     const {registro,cliente,modificar,eliminar} = useContext(Contexto);
@@ -23,22 +24,23 @@ export default function Home(){
         await registro(nombreApellido,email,domicilio,celular);
         navigate("/");
     }
-
+    function modCliente(id){
+        const identificador = id;
+        setIdentificador(identificador);
+    }
     const modificarCliente = async (e) =>{
         e.preventDefault();
-        var identificador = (document.getElementById("identificador").value);
         await modificar(identificador,nombreApellido,email,domicilio,celular);
         navigate("/")
     }
+
     const eliminarCliente = async (e) =>{
         e.preventDefault();
-        var identificador = (document.getElementById("identificador").value);
         await eliminar(identificador)
         navigate("/");
     }
-    function prueba(){
-        console.log(document.getElementById("identificador").value);
-    }
+
+    
     return(
         <>
             <div className="container-xl">
@@ -73,8 +75,8 @@ export default function Home(){
                             </thead>
                             <tbody>
                                 {cliente.map((client) => (
-                                    <tr key={client.id}>
-                                        <td>
+                                    <tr key={client.id} id={client.id} >
+                                        <td> 
                                             <span className="custom-checkbox">
                                                 <input type="checkbox" id="checkbox1" name="options[]" value="1"/>
                                                 <label htmlFor="checkbox1"></label>
@@ -86,10 +88,8 @@ export default function Home(){
                                         <td> {client.domicilio}</td>
                                         <td> {client.celular}</td>
                                         <td>
-                                            {/* la iteraccion tiene que ser aca */}
-                                            <input id="identificador" type="text" value={client.nombreApellido}></input>
-                                            <a href="#editEmployeeModal"  className="edit" data-toggle="modal"><i className="material-icons" data-toggle="tooltip" title="Edit">&#xE254;</i></a>
-                                            <a href="#deleteEmployeeModal" className="delete" data-toggle="modal"><i className="material-icons" data-toggle="tooltip" title="Delete">&#xE872;</i></a>
+                                            <a href="#editEmployeeModal" onClick={()=> {modCliente(client.id)}} className="edit" data-toggle="modal"><i className="material-icons" data-toggle="tooltip" title="Edit">&#xE254;</i></a>
+                                            <a href="#deleteEmployeeModal" onClick={()=> {modCliente(client.id)}} className="delete" data-toggle="modal"><i className="material-icons" data-toggle="tooltip" title="Delete">&#xE872;</i></a>
                                         </td>
                                     </tr>
                                 ))}

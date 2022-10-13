@@ -18,35 +18,21 @@ export default function FirestoreContext(props){
             celular: celular
         });
     }
-    const modificar = async (identificador,nombreApellido,email,domicilio,celular) => {
-        const clientref = collection(fs,"cliente");
-        const q = query(clientref,where("nombreApellido", "==", identificador ))
-        
-        const querySnapshot = await getDocs(q);
-        querySnapshot.forEach((document) => {
-            var idDocumento = document.id;
-            updateDoc(doc(fs,"cliente",idDocumento),{
-                nombreApellido: nombreApellido,
-                email: email,
-                domicilio: domicilio,
-                celular: celular
-            });
-        });
 
+    const modificar = async (identificador,nombreApellido,email,domicilio,celular) => {
+        updateDoc(doc(fs,"cliente",identificador),{
+            nombreApellido: nombreApellido,
+            email: email,
+            domicilio: domicilio,
+            celular: celular
+        });
     }
 
     const eliminar = async (identificador) => {
-        const clientref = collection(fs,"cliente");
-        const q = query(clientref,where("nombreApellido", "==", identificador ))
 
-        const querySnapshot = await getDocs(q);
-        querySnapshot.forEach((document) => {
-            var idDocumento = document.id;
-            deleteDoc(doc(fs,"cliente",idDocumento));
-        });
-    }
-
-
+         deleteDoc(doc(fs,"cliente",identificador));
+        
+        }
 
 
     useEffect(() => {
